@@ -75,7 +75,7 @@ _forgit_log() {
     _forgit_inside_work_tree || return 1
     local opts graph files log_format preview_cmd enter_cmd
     files=$(sed -nE 's/.* -- (.*)/\1/p' <<< "$*") # extract files parameters for `git show` command
-    preview_cmd="echo {} | $_forgit_extract_sha | xargs -I% git show --color=always -U$_forgit_preview_context % -- $files | $_forgit_show_pager"
+    preview_cmd="echo {} | $_forgit_extract_sha | xargs -I% git show --stat-count=10 --patch-with-stat --color=always -U$_forgit_preview_context % -- $files | $_forgit_show_pager"
     enter_cmd="echo {} | $_forgit_extract_sha | xargs -I% ${FORGIT} diff %^! $files"
     opts="
         $FORGIT_FZF_DEFAULT_OPTS
@@ -195,7 +195,7 @@ _forgit_reset_head() {
 _forgit_stash_show() {
     _forgit_inside_work_tree || return 1
     local cmd opts
-    cmd="echo {} |cut -d: -f1 |xargs -I% git stash show --color=always --ext-diff % |$_forgit_diff_pager"
+    cmd="echo {} |cut -d: -f1 |xargs -I% git stash show --stat-count=10 --patch-with-stat --color=always --ext-diff % |$_forgit_diff_pager"
     opts="
         $FORGIT_FZF_DEFAULT_OPTS
         +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd | $_forgit_enter_pager)\"
